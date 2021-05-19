@@ -131,7 +131,7 @@ def train(cfg):
         x_hat = nn.Parameter(w).to(device)
     else:
         w = torch.Tensor(*x.shape)
-		nn.init.orthogonal_(w)
+        nn.init.orthogonal_(w)
         x_hat = nn.Parameter(w).to(device)
 
     optimizer = optim.Adam([x_hat], lr=cfg.training.optimizer.lr)
