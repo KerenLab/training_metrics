@@ -130,7 +130,7 @@ def train(cfg):
         w = torch.load(cfg.training.resume)
         x_hat = nn.Parameter(w).to(device)
     else:
-        w = torch.empty(*x.shape, requires_grad=True)
+        w = torch.empty(*x.shape, requires_grad=True, device="cuda")
         nn.init.orthogonal_(w)
         x_hat = nn.Parameter(w).to(device)
 
