@@ -125,6 +125,10 @@ def train(cfg):
 
     # ref_cov = torch.load(cfg.dataset.ref_cov, map_location=device).to(device)
     loss_fn = Loss(A, y)
+
+    x_hat = nn.Parameter(torch.rand_like(x)).to(device)
+    optimizer = optim.Adam([x_hat], lr=cfg.training.optimizer.lr)
+
     if cfg.training.resume:
         log.info("Resume checkpoint from: {}:".format(cfg.training.resume))
         resume_path = utils.to_absolute_path(cfg.training.resume)
@@ -134,14 +138,6 @@ def train(cfg):
         global_step = checkpoint["step"]
     else:
         global_step = 0
-    #if cfg.training.resume:
-        # TODO load optimizer state
-        
-        #w = torch.load(cfg.training.resume)
-        #x_hat = nn.Parameter(w).to(device)
-        x_hat = nn.Parameter(torch.rand_like(x)).to(device)
-
-    optimizer = optim.Adam([x_hat], lr=cfg.training.optimizer.lr)
 
     for i in range(global_step+1, cfg.training.epochs + 1):
         optimizer.zero_grad()
