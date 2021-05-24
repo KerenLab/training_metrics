@@ -79,7 +79,7 @@ class Loss(nn.Module):
 
 @hydra.main(config_path='conf/opt', config_name='config')
 def train(cfg):
-    task = Task.init(project_name="Optimisation")
+    task = Task.init(project_name="CS optimization")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     log.info(f'{device} detected.')
     log.debug(OmegaConf.to_yaml(cfg))
