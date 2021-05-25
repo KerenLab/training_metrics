@@ -16,7 +16,6 @@ from pathlib import Path
 # from utils import load_data
 
 from torch.utils.tensorboard import SummaryWriter
-from clearml import Task
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -79,7 +78,7 @@ class Loss(nn.Module):
 
 @hydra.main(config_path='conf/opt', config_name='config')
 def train(cfg):
-    #task = Task.init(project_name="CS optimization")
+    # task = Task.init(project_name="CS optimization")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     log.info(f'{device} detected.')
     log.debug(OmegaConf.to_yaml(cfg))
@@ -132,14 +131,14 @@ def train(cfg):
     if cfg.training.resume:
         log.info("Resume checkpoint from: {}:".format(cfg.training.resume))
         resume_path = utils.to_absolute_path(cfg.training.resume)
-        checkpoint = torch.load(resume_path, map_location=lambda storage, loc: storage)
+        checkpoint = torch.load(resume_path)  # ,map_location=lambda storage, loc: storage)
         x_hat = checkpoint["x_hat"]
         optimizer.load_state_dict(checkpoint["optimizer"])
         global_step = checkpoint["step"]
     else:
         global_step = 0
 
-    for i in range(global_step+1, cfg.training.epochs + 1):
+    for i in range(global_step + 1, cfg.training.epochs + 1):
         optimizer.zero_grad()
         # mse, reg, con, cov = loss_fn(F.relu(x_hat) if cfg.training.relu else x_hat)
         mse, reg, con = loss_fn(F.relu(x_hat))
@@ -157,15 +156,13 @@ def train(cfg):
         f1 = 2 * (x_binary * x_hat_binary).sum() / (x_binary.sum() + x_hat_binary.sum())
 
         if i % cfg.logging.checkpoint_interval == 0:
-            # TODO save optimizer state
             checkpoint_state = {
-            "x_hat": x_hat,
-            "optimizer": optimizer.state_dict(),
-            "step": i,
+                "x_hat": x_hat,
+                "optimizer": optimizer.state_dict(),
+                "step": i,
             }
-            
-            torch.save(checkpoint_state, os.path.join(res_dir, 'iter{}_{:.2f}.pt'.
-                                           format(i, e)))
+
+            torch.save(checkpoint_state, os.path.join(res_dir, 'cp.pt'))
             log.info('checkpoint saved!')
 
         log.info(
