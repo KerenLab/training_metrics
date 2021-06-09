@@ -1,3 +1,7 @@
+import torchvision.transforms as T
+from torch.utils.data import Dataset
+
+
 class CancerDataset(Dataset):
     def __init__(self, data, random_crop, initial_transform=None):
         super().__init__()
@@ -6,7 +10,6 @@ class CancerDataset(Dataset):
         else:
             self.data = data
 
-        self.batch_size = batch_size
         self.random_crop = random_crop
         self.transform = T.Compose([
             T.RandomHorizontalFlip(p=0.5),
