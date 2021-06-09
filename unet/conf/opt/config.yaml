@@ -1,0 +1,29 @@
+exp:
+  summary: None
+  seed: 42
+
+dataset:
+  src: data/all_data.nc
+  panel: data/matrices/8_25
+  ref_cov: data/train_cov.pt
+  fovs: ['Point5']
+
+training:
+  relu: True
+  init: normal
+  epochs: 1000000
+  resume: False
+  reg: 0.5
+  con: 0.005
+  cov: 0.1
+  grad_clip: -1
+  optimizer:
+    lr: 1e-4
+
+logging:
+  comet:
+    api_key: whaLZzD4joMj2uX2WK8q2bs5T
+    project_name: cs-opt
+    workspace: omerbt
+  checkpoint_dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  checkpoint_interval: 500

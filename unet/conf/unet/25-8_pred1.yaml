@@ -1,0 +1,52 @@
+exp:
+  summary: 25 to 8 compression
+  seed: 42
+dataset:
+  crop_size: 2048
+  batch_size: 8
+  src: data/all_data.nc
+  panel: data/matrices/8_25
+  dropout: 0
+model:
+  net:
+    in_channels: 8
+    out_channels: 1
+    bilinear: true
+training:
+  out_channels:
+  index: [9]
+  bce:
+    alpha: 1
+    gamma: 2
+    reduction: mean
+  top_k: 1
+  use_positive_weights: false
+  recon_p: 2
+  n_steps: 1000000
+  resume: false
+  recon: 0
+  ls: 0
+  cl: 1
+  grad_clip: -1
+  optimizer:
+    lr: 0.0001
+  val_fovs:
+  - Point22
+  - Point37
+  - Point5
+  - Point12
+  - Point21
+  train_fovs: false
+postprocess:
+  fov:
+  - Point5
+  mask: Point5_mask.pt
+  n_steps: 1000000
+  optimizer:
+    lr: 0.1
+  save_interval: 1000
+  save_name: Point5_pred
+logging:
+  checkpoint_dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  checkpoint_interval: 200
+  eval_interval: 10
